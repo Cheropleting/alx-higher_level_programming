@@ -1,32 +1,22 @@
 #include "lists.h"
+
 /**
- * check_cycle - cycle tortoise and hare
- * @list: pointer to head
- * Return: 1 on success, 0 otherwise.
+ * check_cycle - check if list is cycle
+ * @list: type listint_t
+ * Return: always int
+ * case: 1 true, 0 false
  */
+
 int check_cycle(listint_t *list)
 {
-	listint_t *tortoise;
-	listint_t *hare;
+	listint_t *turtle = list, *hare = list;
 
-	if (list == NULL)
-		return (0);
-	tortoise = list;
-	hare = list;
-	while (hare->next != NULL && hare->next->next != NULL)
+	while (turtle != NULL && hare != NULL && hare->next != NULL)
 	{
-		tortoise = tortoise->next;
+		turtle = turtle->next;
 		hare = hare->next->next;
-		if (tortoise == hare)
-		{
-			tortoise = list;
-			while (tortoise != hare)
-			{
-				tortoise = tortoise->next;
-				hare = hare->next;
-			}
+		if (hare == turtle)
 			return (1);
-		}
 	}
 	return (0);
 }
