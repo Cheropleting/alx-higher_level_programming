@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-"""initializate"""
+'''task 5 module'''
+
+
 import json
 
 
 def save_to_json_file(my_obj, filename):
-    """writes an Object to a text file"""
-    with open(filename, 'w') as f:
-        file_json = json.dumps(my_obj)
-        f.write(file_json)
-    f.close()
+    '''writes obj to file in json format'''
+    with open(filename, mode='w', encoding='utf-8') as f:
+        json.dump(my_obj, f)

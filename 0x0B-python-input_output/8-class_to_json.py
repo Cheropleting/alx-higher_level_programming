@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-"""initializate"""
+'''task 8 module'''
 
 
 def class_to_json(obj):
-    """return"""
-    return obj.__dict__
+    '''returns dict discription with simple data structure'''
+    return (obj.__dict__)

@@ -1,10 +1,9 @@
 #!/usr/bin/python3
-"""initialize"""
+'''module for task 0'''
 
 
 def read_file(filename=""):
-    """create function that read a text file"""
-    with open(filename, encoding="UTF8") as f:
-        line = f.read()
-    print(line, end="")
-    f.close()
+    '''reads a file in utf-8 encoding'''
+    with open(filename, encoding='utf-8') as p:
+        txt = p.read()
+    print(txt, end='')

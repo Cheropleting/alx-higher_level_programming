@@ -1,8 +1,10 @@
 #!/usr/bin/python3
-"""initializate"""
+'''task 3 module'''
+
+
 import json
 
 
 def to_json_string(my_obj):
-    """JSON representation of an object (string)"""
+    '''returns the json format of the obj'''
     return json.dumps(my_obj)
