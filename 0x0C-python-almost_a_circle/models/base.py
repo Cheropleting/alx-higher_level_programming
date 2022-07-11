@@ -1,116 +1,122 @@
 #!/usr/bin/python3
-"""Base Module"""
+"""Module that contains the class Base"""
 import json
-import csv
+import os.path
 
 
 class Base:
-    """Base class
-
-    Attributes:
-        __nb_objects (int): class private attribute
-        id (int): public instance attribute
-
+    """
+       A parent class named Base
     """
     __nb_objects = 0
 
     def __init__(self, id=None):
-        """Initializer
-
-        Args:
-            id (int): objects id
-
         """
+           Constructor method __init__ to initialize the Base instance
+
+           Args:
+                param1 (id): Id of the object
+        """
+        self.__nb_objects = 0
+
         if id is not None:
             self.id = id
+
         else:
             Base.__nb_objects += 1
             self.id = Base.__nb_objects
 
+    """--------------------------METHODS-------------------------"""
     @staticmethod
     def to_json_string(list_dictionaries):
-        """returns JSON format representaion"""
-        if list_dictionaries is None or list_dictionaries == []:
-            return "[]"
-        return json.dumps(list_dictionaries)
+        """
+            Returns the JSON string representation to
+            list_dictionaries
+
+            Args:
+                 param1 (list_dictionaries): List of dictionaries
+        """
+        string = "[]"
+        if list_dictionaries is None or len(list_dictionaries) == 0:
+            return string
+
+        string = json.dumps(list_dictionaries)
+        return string
 
     @classmethod
     def save_to_file(cls, list_objs):
-        """writes JSON string representation
-
-        Args:
-            list_objs (list): list of instance
-
         """
-        l = []
-        if list_objs is not None:
-            for d in list_objs:
-                l.append(cls.to_dictionary(d))
-        with open(str(cls.__name__ + ".json"), "w", encoding="utf-8") as f:
-            f.write(cls.to_json_string(l))
+            Writes the JSON string representation of list_objs to a file
+
+            Args:
+                 param1 (list_objs): List of instances who inherits of Base
+        """
+        list_objects = []
+        filename = "{}.json".format(cls.__name__)
+        if list_objs is None:
+            list_objects = []
+
+        else:
+            for object in list_objs:
+                list_objects.append(cls.to_dictionary(object))
+
+        with open(filename, mode='w', encoding='utf-8') as my_file:
+            my_file.write(cls.to_json_string(list_objects))
 
     @staticmethod
     def from_json_string(json_string):
-        """returns the list of JSON representation"""
-        if json_string is None or json_string == '':
-            return []
-        return json.loads(json_string)
+        """
+            Returns the list of the JSON string representation
+            json_string
+
+            Args:
+                 param1 (json_string): string representing list of dictionaries
+        """
+        list_from_json = []
+        if json_string is None or len(json_string) == 0:
+            return list_from_json
+
+        else:
+            list_from_json = json.loads(json_string)
+            return list_from_json
 
     @classmethod
     def create(cls, **dictionary):
-        """Create from dictionnary"""
+        """
+            Returns an instance with all attributes already set
+
+            Args:
+                 param1 (cls): class of instance
+                 param2 (dictionary): dictionary
+        """
         if cls.__name__ == "Rectangle":
-            dummy = cls(1, 1)
+            dummy_instance = cls(1, 1, 0, 0)
+
         elif cls.__name__ == "Square":
-            dummy = cls(1)
-        else:
-            dummy = None
-        dummy.update(**dictionary)
-        return dummy
+            dummy_instance = cls(1, 0, 0)
+
+        dummy_instance.update(**dictionary)
+        return dummy_instance
 
     @classmethod
     def load_from_file(cls):
-        """Load from file"""
-        filename = cls.__name__ + ".json"
-        ll = []
-        try:
-            with open(filename, "r", encoding="utf-8") as f:
-                a_dictionary = cls.from_json_string(f.read())
-                for row in a_dictionary:
-                    ll.append(cls.create(**row))
-                return ll
-        except IOError:
-            return []
+        """
+            Returns a list of instances
 
-    @classmethod
-    def save_to_file_csv(cls, list_objs):
-        """Serialize a class to csv"""
-        filename = cls.__name__ + ".csv"
-        attributes = ["id", "x", "y"]
-        with open(filename, "w", newline="") as f:
-            if list_objs is None or list_objs == []:
-                f.write("[]")
-            else:
-                if cls.__name__ == "Rectangle":
-                    attributes = ["id","width", "height", "x", "y"]
-                else:
-                    attributes = ["id","size", "x", "y"]
-                writer = csv.DictWriter(f, fieldnames=attributes)
-                for item in list_objs:
-                    writer.writerow(item.to_dictionary())
+            Args:
+                 param1 (cls): current class
+        """
+        filename = "{}.json".format(cls.__name__)
+        my_list = []
 
-    @classmethod
-    def load_from_file_csv(cls):
-        """Deserialize csv file"""
-        filename = cls.__name__ + ".csv"
-        try:
-            with open(filename, "w") as f:
-                reader = csv.DictReader(f)
-                ll = []
-                for row in reader:
-                    for k, v in row.items():
-                        row[k] = int(v)
-                    ll.append(row)
-                return [cls.create(**item) for item in ll]
-        except FileNotFoundError:
-            return []
+        if os.path.isfile(filename):
+            with open(filename, mode="r") as my_file:
+                my_list = cls.from_json_string(my_file.read())
+
+            for index in range(0, len(my_list)):
+                my_list[index] = cls.create(**my_list[index])
+
+        else:
+            my_list = []
+
+        return my_list
